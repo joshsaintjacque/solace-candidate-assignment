@@ -35,30 +35,39 @@ export default function Home() {
 
     fetchAdvocates();
   }, []);
+  
+  useEffect(() => {
+    console.log("filtering advocates...");
+    const filterAdvocates = (term: string) => {
+      const lowerCaseTerm = term.toLowerCase();
+      const filtered = advocates.filter((advocate) => {
+        return (
+          advocate.firstName.toLowerCase().includes(lowerCaseTerm) ||
+          advocate.lastName.toLowerCase().includes(lowerCaseTerm) ||
+          advocate.city.toLowerCase().includes(lowerCaseTerm) ||
+          advocate.degree.toLowerCase().includes(lowerCaseTerm) ||
+          advocate.specialties.some(specialty => specialty.toLowerCase().includes(lowerCaseTerm)) ||
+          advocate.yearsOfExperience.toString().includes(lowerCaseTerm)
+        );
+      });
+      setFilteredAdvocates(filtered);
+    };
+
+    filterAdvocates(searchTerm);
+  }, [searchTerm, advocates]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setSearchTerm(searchTerm);
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.toLowerCase().includes(searchTerm) ||
-        advocate.lastName.toLowerCase().includes(searchTerm) ||
-        advocate.city.toLowerCase().includes(searchTerm) ||
-        advocate.degree.toLowerCase().includes(searchTerm) ||
-        advocate.specialties.some(specialty => specialty.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        advocate.yearsOfExperience.toString().includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+    setSearchTerm(e.target.value);
   };
 
   const onClick = () => {
     console.log(advocates);
     setFilteredAdvocates(advocates);
     setSearchTerm("");
+  };
+
+  const handleFieldClick = (searchText: string) => {
+    setSearchTerm(searchText);
   };
 
   return (
@@ -103,19 +112,19 @@ export default function Home() {
           <tbody>
             {filteredAdvocates.map((advocate) => (
               <tr key={advocate.id} className="hover:bg-gray-50">
-                <td className="py-3 px-4 border-b text-gray-700">{fullName(advocate)}</td>
-                <td className="py-3 px-4 border-b text-gray-700">{advocate.city}</td>
-                <td className="py-3 px-4 border-b text-gray-700">{advocate.degree}</td>
+                <td className="py-3 px-4 border-b text-gray-700 cursor-pointer" onClick={() => handleFieldClick(advocate.lastName)}>{fullName(advocate)}</td>
+                <td className="py-3 px-4 border-b text-gray-700 cursor-pointer" onClick={() => handleFieldClick(advocate.city)}>{advocate.city}</td>
+                <td className="py-3 px-4 border-b text-gray-700 cursor-pointer" onClick={() => handleFieldClick(advocate.degree)}>{advocate.degree}</td>
                 <td className="py-3 px-4 border-b text-gray-700">
                   <ul className="text-sm text-gray-700">
                     {advocate.specialties.map((s) => (
-                      <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2">
+                      <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer" onClick={() => handleFieldClick(s)}>
                         {s}
                       </li>
                     ))}
                   </ul>
                 </td>
-                <td className="py-3 px-4 border-b text-gray-700">{advocate.yearsOfExperience}</td>
+                <td className="py-3 px-4 border-b text-gray-700 cursor-pointer" onClick={() => handleFieldClick(advocate.yearsOfExperience.toString())}>{advocate.yearsOfExperience}</td>
                 <td className="py-3 px-4 border-b text-gray-700">{advocate.phoneNumber}</td>
               </tr>
             ))}
@@ -125,18 +134,18 @@ export default function Home() {
       <div className="block md:hidden">
         {filteredAdvocates.map((advocate) => (
           <div key={advocate.id} className="bg-white p-4 mb-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold text-gray-800">{fullName(advocate)}</h2>
-            <p className="text-gray-600"><strong>City:</strong> {advocate.city}</p>
-            <p className="text-gray-600"><strong>Degree:</strong> {advocate.degree}</p>
+            <h2 className="text-xl font-semibold text-gray-800 cursor-pointer" onClick={() => handleFieldClick(advocate.lastName)}>{fullName(advocate)}</h2>
+            <p className="text-gray-600 cursor-pointer" onClick={() => handleFieldClick(advocate.city)}><strong>City:</strong> {advocate.city}</p>
+            <p className="text-gray-600 cursor-pointer" onClick={() => handleFieldClick(advocate.degree)}><strong>Degree:</strong> {advocate.degree}</p>
             <p className="text-gray-600"><strong>Specialties:</strong></p>
             <ul className="text-sm text-gray-700 mt-2 md:mt-0">
               {advocate.specialties.map((s) => (
-                <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2">
+                <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer" onClick={() => handleFieldClick(s)}>
                   {s}
                 </li>
               ))}
             </ul>
-            <p className="text-gray-600"><strong>Years of Experience:</strong> {advocate.yearsOfExperience}</p>
+            <p className="text-gray-600 cursor-pointer" onClick={() => handleFieldClick(advocate.yearsOfExperience.toString())}><strong>Years of Experience:</strong> {advocate.yearsOfExperience}</p>
             <p className="text-gray-600"><strong>Phone Number:</strong> {advocate.phoneNumber}</p>
           </div>
         ))}
