@@ -7,15 +7,26 @@ export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
+    const fetchAdvocates = async () => {
+      try {
+        console.log("fetching advocates...");
+        const response = await fetch("/api/advocates");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const jsonResponse = await response.json();
         setAdvocates(jsonResponse.data);
         setFilteredAdvocates(jsonResponse.data);
-      });
-    });
+      } catch (error) {
+        console.error("Failed to fetch advocates:", error);
+        setErrorMessage("Failed to fetch advocates. Please try again later.");
+      }
+    };
+  
+    fetchAdvocates();
   }, []);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +69,11 @@ export default function Home() {
       </div>
       <br />
       <br />
+      {errorMessage && (
+        <div className="text-red-500">
+          {errorMessage}
+        </div>
+      )}
       <table>
         <thead>
           <th>First Name</th>
