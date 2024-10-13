@@ -8,6 +8,8 @@ interface Person {
   lastName: string;
 }
 
+const DEBOUNCE_DELAY = 300;
+
 const fullName = (person: Person) => `${person.firstName} ${person.lastName}`.trim();
 
 export default function Home() {
@@ -35,25 +37,29 @@ export default function Home() {
 
     fetchAdvocates();
   }, []);
-  
-  useEffect(() => {
-    console.log("filtering advocates...");
-    const filterAdvocates = (term: string) => {
-      const lowerCaseTerm = term.toLowerCase();
-      const filtered = advocates.filter((advocate) => {
-        return (
-          advocate.firstName.toLowerCase().includes(lowerCaseTerm) ||
-          advocate.lastName.toLowerCase().includes(lowerCaseTerm) ||
-          advocate.city.toLowerCase().includes(lowerCaseTerm) ||
-          advocate.degree.toLowerCase().includes(lowerCaseTerm) ||
-          advocate.specialties.some(specialty => specialty.toLowerCase().includes(lowerCaseTerm)) ||
-          advocate.yearsOfExperience.toString().includes(lowerCaseTerm)
-        );
-      });
-      setFilteredAdvocates(filtered);
-    };
 
-    filterAdvocates(searchTerm);
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      console.log("filtering advocates...");
+      const filterAdvocates = (term: string) => {
+        const lowerCaseTerm = term.toLowerCase();
+        const filtered = advocates.filter((advocate) => {
+          return (
+            advocate.firstName.toLowerCase().includes(lowerCaseTerm) ||
+            advocate.lastName.toLowerCase().includes(lowerCaseTerm) ||
+            advocate.city.toLowerCase().includes(lowerCaseTerm) ||
+            advocate.degree.toLowerCase().includes(lowerCaseTerm) ||
+            advocate.specialties.some(specialty => specialty.toLowerCase().includes(lowerCaseTerm)) ||
+            advocate.yearsOfExperience.toString().includes(lowerCaseTerm)
+          );
+        });
+        setFilteredAdvocates(filtered);
+      };
+
+      filterAdvocates(searchTerm);
+    }, DEBOUNCE_DELAY);
+
+    return () => clearTimeout(debounceTimeout);
   }, [searchTerm, advocates]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
