@@ -77,7 +77,7 @@ export default function Home() {
           aria-label="Search advocates"
         />
         <button
-          className="bg-blue-500 text-white p-2 rounded ml-2 mt-2 md:mt-0 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-blue-500 text-white p-2 rounded md:ml-2 mt-2 md:mt-0 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={onClick}
         >
           Reset Search
@@ -88,38 +88,59 @@ export default function Home() {
           {errorMessage}
         </div>
       )}
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Name</th>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">City</th>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Degree</th>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Specialties</th>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Years of Experience</th>
-            <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => (
-            <tr key={advocate.id} className="hover:bg-gray-50">
-              <td className="py-3 px-4 border-b text-gray-700">{fullName(advocate)}</td>
-              <td className="py-3 px-4 border-b text-gray-700">{advocate.city}</td>
-              <td className="py-3 px-4 border-b text-gray-700">{advocate.degree}</td>
-              <td className="py-3 px-4 border-b text-gray-700">
-                <ul className="text-sm text-gray-700">
-                  {advocate.specialties.map((s) => (
-                    <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2">
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-              </td>
-              <td className="py-3 px-4 border-b text-gray-700">{advocate.yearsOfExperience}</td>
-              <td className="py-3 px-4 border-b text-gray-700">{advocate.phoneNumber}</td>
+      <div className="hidden md:block">
+        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Name</th>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">City</th>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Degree</th>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Specialties</th>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Years of Experience</th>
+              <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">Phone Number</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredAdvocates.map((advocate) => (
+              <tr key={advocate.id} className="hover:bg-gray-50">
+                <td className="py-3 px-4 border-b text-gray-700">{fullName(advocate)}</td>
+                <td className="py-3 px-4 border-b text-gray-700">{advocate.city}</td>
+                <td className="py-3 px-4 border-b text-gray-700">{advocate.degree}</td>
+                <td className="py-3 px-4 border-b text-gray-700">
+                  <ul className="text-sm text-gray-700">
+                    {advocate.specialties.map((s) => (
+                      <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="py-3 px-4 border-b text-gray-700">{advocate.yearsOfExperience}</td>
+                <td className="py-3 px-4 border-b text-gray-700">{advocate.phoneNumber}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="block md:hidden">
+        {filteredAdvocates.map((advocate) => (
+          <div key={advocate.id} className="bg-white p-4 mb-4 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-800">{fullName(advocate)}</h2>
+            <p className="text-gray-600"><strong>City:</strong> {advocate.city}</p>
+            <p className="text-gray-600"><strong>Degree:</strong> {advocate.degree}</p>
+            <p className="text-gray-600"><strong>Specialties:</strong></p>
+            <ul className="text-sm text-gray-700 mt-2 md:mt-0">
+              {advocate.specialties.map((s) => (
+                <li key={s} className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2">
+                  {s}
+                </li>
+              ))}
+            </ul>
+            <p className="text-gray-600"><strong>Years of Experience:</strong> {advocate.yearsOfExperience}</p>
+            <p className="text-gray-600"><strong>Phone Number:</strong> {advocate.phoneNumber}</p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
